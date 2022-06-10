@@ -1,0 +1,20 @@
+{
+  "name": "apexbot",
+  "version": "1.0.0",
+  "description": "A bot that helps players from Apex Legends get information about the current state of the game.",
+  "main": "index.js",
+  "keywords": [],
+  "author": "Dawit Mengistie",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/builders": "^0.15.0",
+    "@discordjs/rest": "^0.5.0",
+    "discord-api-types": "^0.33.5",
+    "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
+    "discord.js": "^13.8.0",
+    "xhr2": "^0.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.17.0"
+  }
+}
