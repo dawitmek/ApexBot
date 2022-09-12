@@ -6,15 +6,17 @@
   "keywords": [],
   "author": "Dawit Mengistie",
   "license": "ISC",
+  "scripts": {
+    "deploy": "node deploy-commands.js",
+    "start": "node index.js"
+  },
   "dependencies": {
     "@discordjs/builders": "^0.15.0",
     "@discordjs/rest": "^0.5.0",
     "discord-api-types": "^0.33.5",
     "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
     "discord.js": "^13.8.0",
-    "xhr2": "^0.2.1"
-  },
-  "devDependencies": {
-    "eslint": "^8.17.0"
+    "node-fetch": "^2.6.7",
+    "nodemon": "^2.0.19"
   }
 }

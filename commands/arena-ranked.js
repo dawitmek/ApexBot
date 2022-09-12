@@ -1,31 +1,24 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { API_KEY } = require('../apex-api.json');
-
+const API_KEY = process.env.APEX_API_KEY;
+const fetch = require('node-fetch');
+const lib = require('../library.js')
+const { MessageEmbed } = require("discord.js");
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('map-ar-ranked')
-		.setDescription('Replies with information about Apex Legends current map!'),
-	async execute(interaction) {
-        var XMLHttpRequest = require('xhr2');
-        var http = new XMLHttpRequest();
+    data: new SlashCommandBuilder()
+        .setName('map-ar-ranked')
+        .setDescription('Replies with information about Apex Legends current map!'),
+    async execute(interaction) {
+        fetch(`https://api.mozambiquehe.re/maprotation?auth=${API_KEY}&version=2`)
+            .then(data => data.json())
+            .then(obj => {
+                let newEmbed = lib.createEmbed('Current Map Rotation for Ranked Arenas', [
+                    { name: 'Current Map:', value: obj.arenasRanked.current.map },
+                    { name: 'Time Left:', value: lib.calcTime(obj.arenasRanked.current.remainingSecs) },
+                    { name: 'Next Map:', value: obj.arenasRanked.next.map }
+                ], obj.arenasRanked.current.asset, false);
 
-        http.onreadystatechange = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                var obj = JSON.parse(http.responseText);
-                interaction.reply(
-                    `Current Ranked Arenas Map: ${obj.arenasRanked.current.map}\nTime Left: ${calcTime(obj.arenasRanked.current.remainingSecs)}\n\nNext Map: ${obj.arenasRanked.next.map}
-                    `);
-            }
-        }
-        http.open("GET", `https://api.mozambiquehe.re/maprotation?auth=${API_KEY}&version=2`, true);
-        http.send();
-	}
+                interaction.reply({ embeds: [newEmbed], ephemeral: false });
+            })
+    }
 };
-
-function calcTime(time) {
-	var hours = Math.floor(time/3600%60);
-	var minutes = Math.floor(time/60%60);
-	var seconds = Math.floor(time%60);
-	return hours +'h: ' + minutes +'m: ' + seconds+'s';
-}

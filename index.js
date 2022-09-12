@@ -1,19 +1,12 @@
 // Require the necessary discord.js classes
 const fs = require('node:fs');
 const path = require('node:path');
-const { Client, Collection, Intents } = require('discord.js');
-const { token } = require('./config.json');
-const { API_KEY } = require('./apex-api.json');
+const { Client, Collection } = require('discord.js');
+const token = process.env.APEXTOKEN;
+const API_KEY = process.env.APEX_API_KEY;
 
 // Create a new client instance Discord.js
 const client = new Client({ intents: ["GUILDS", "GUILD_MESSAGES", "DIRECT_MESSAGES"] });
-
-function calcTime(time) {
-	var hours = Math.floor(time/3600%60);
-	var minutes = Math.floor(time/60%60);
-	var seconds = Math.floor(time%60);
-	return hours +'h: ' + minutes +'m: ' + seconds+'s';
-}
 
 client.commands = new Collection();
 
@@ -57,17 +50,17 @@ client.on("messageCreate", (message) => {
 
 					  if(args[2] === 'ranked') {
 						message.channel.send(
-							`Current Ranked Arenas Map: ${obj.arenasRanked.current.map}\nTime Left: ${calcTime(obj.arenasRanked.current.remainingSecs)}\n\nNext Map: ${obj.arenasRanked.next.map}
+							`Current Ranked Arenas Map: ${obj.arenasRanked.current.map}\nTime Left: ${lib.calcTime(obj.arenasRanked.current.remainingSecs)}\n\nNext Map: ${obj.arenasRanked.next.map}
 						  `,
 						);
 					  } else {
 						message.channel.send(
-							`Current Arenas Map: ${obj.arenas.current.map}\nTime Left: ${calcTime(obj.arenas.current.remainingSecs)}\n\nNext Map: ${obj.arenas.next.map}
+							`Current Arenas Map: ${obj.arenas.current.map}\nTime Left: ${lib.calcTime(obj.arenas.current.remainingSecs)}\n\nNext Map: ${obj.arenas.next.map}
 						  `,);
 					  }
 					} else {
 						message.channel.send(
-							`Current Map: ${obj.battle_royale.current.map}\nTime Left: ${calcTime(obj.battle_royale.current.remainingSecs)}\n\nNext Map: ${obj.battle_royale.next.map}
+							`Current Map: ${obj.battle_royale.current.map}\nTime Left: ${lib.calcTime(obj.battle_royale.current.remainingSecs)}\n\nNext Map: ${obj.battle_royale.next.map}
 						  `,);
 					}
 				}

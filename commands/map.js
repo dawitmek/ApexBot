@@ -1,30 +1,23 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { API_KEY } = require('../apex-api.json');
+const API_KEY = process.env.APEX_API_KEY;
+const fetch = require('node-fetch');
+const lib = require('../library.js')
+
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('map')
-		.setDescription('Replies with information about Apex Legends current map!'),
-	async execute(interaction) {
-        var XMLHttpRequest = require('xhr2');
-        var http = new XMLHttpRequest();
-
-        http.onreadystatechange = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                var obj = JSON.parse(http.responseText);
-                interaction.reply(
-                    `Current Map: ${obj.battle_royale.current.map}\nTime Left: ${calcTime(obj.battle_royale.current.remainingSecs)}\n\nNext Map: ${obj.battle_royale.next.map}
-                    `);
-            }
-        }
-        http.open("GET", `https://api.mozambiquehe.re/maprotation?auth=${API_KEY}&version=2`, true);
-        http.send();
-	}
+    data: new SlashCommandBuilder()
+        .setName('map')
+        .setDescription('Replies with information about Apex Legends current map!'),
+    async execute(interaction) {
+        fetch(`https://api.mozambiquehe.re/maprotation?auth=${API_KEY}&version=2`)
+            .then(data => data.json())
+            .then(obj => {
+                let newEmbed = lib.createEmbed('Current Map Rotation for Casual Apex', [
+                    { name: 'Current Map:', value: obj.battle_royale.current.map },
+                    { name: 'Time Left:', value: lib.calcTime(obj.battle_royale.current.remainingSecs) },
+                    { name: 'Next Map:', value: obj.battle_royale.next.map }
+                ], obj.battle_royale.current.asset, false);
+                interaction.reply({ embeds: [newEmbed], ephemeral: false })
+            })
+    }
 };
-
-function calcTime(time) {
-	var hours = Math.floor(time/3600%60);
-	var minutes = Math.floor(time/60%60);
-	var seconds = Math.floor(time%60);
-	return hours +'h: ' + minutes +'m: ' + seconds+'s';
-}
